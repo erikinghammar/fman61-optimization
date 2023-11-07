@@ -1,31 +1,25 @@
 function [X,N] = goldensection(F, a, b, tol)
+    % GOLDENSECTION Perform a golden section search for the mininum of F
+    % over [a,b]
     phi = (sqrt(5) - 1) / 2;
     idx = 1;
-    L1 = b-a;
-    L(1) = L1;
 
-    left(idx) = a;
-    right(idx) = b;
+    X = [a , b, b-a];
 
-    while (L(end) / L1 >= tol)
-        ml = (1-phi)*(right(idx)-left(idx)) + left(idx);
-        mr = phi * (right(idx)-left(idx)) + left(idx);
+    R = 1; % a factor that should be 1
+    while (X(end,3) / X(1,3) * R > tol)
+        ml = (1-phi)*(X(idx,2)-X(idx,1)) + X(idx,1);
+        mr = phi * (X(idx,2)-X(idx,1)) + X(idx,1);
 
         Fl = F(ml);
         Fr = F(mr);
 
         idx = idx + 1;
         if (Fl < Fr)
-            right(idx) = mr;
-            left(idx) = left(idx-1);
+            X(idx, :) = [X(idx-1,1),mr, abs(X(idx-1,1) - mr)]; 
         else 
-            left(idx) = ml;
-            right(idx) = right(idx-1);
+            X(idx, :) = [ml, X(idx-1,2), abs(X(idx-1,2) - ml)]; 
         end
-
-        
-        L(idx) = phi * L(idx-1);
     end
-    N = length(L);
-    X = [left', right', L'];
+    N = idx;
 end

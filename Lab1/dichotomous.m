@@ -1,14 +1,13 @@
 function [X,N] = dichotomous(F, a, b, tol)
+% DICHOTOMOUS Perform a dichotomous search for the minimum value of F over
+% [a,b]
     delta = 10^-10;
     idx = 1;
-    L0 = b-a;
-    L(1) = L0;
+    X = [a, b, b-a];
 
-    left(idx) = a;
-    right(idx) = b;
-
-    while (L(end) / L0 >= tol)
-        ml = (left(idx) + right(idx))/2 - delta;
+    while (X(end,3) / X(1,3) >= tol)
+        disp(idx)
+        ml = (X(idx,1) + X(idx,2))/2 - delta;
         mr = ml + 2*delta;
 
         Fl = F(ml);
@@ -16,16 +15,10 @@ function [X,N] = dichotomous(F, a, b, tol)
 
         idx = idx + 1;
         if (Fl < Fr)
-            right(idx) = mr;
-            left(idx) = left(idx-1);
+            X(idx,:) = [X(idx-1,1), mr, mr - X(idx-1,1)];
         else 
-            left(idx) = ml;
-            right(idx) = right(idx-1);
+            X(idx,:) = [ml, X(idx-1,2), X(idx-1,2) - ml];
         end
-
-        
-        L(idx) = abs(left(idx) - right(idx));
     end
-    N = length(L)*2;
-    X = [left', right', L'];
+    N = (idx-1)*2;
 end
