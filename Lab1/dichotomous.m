@@ -11,7 +11,9 @@ function [X,N] = dichotomous(F, a, b, tol)
         mr = ml + 2*delta;
 
         Fl = F(ml);
-        Fr = F(mr);
+        Fr = F(mr); % not efficient, save variables to avoid extra function
+                    % calls.
+
 
         idx = idx + 1;
         if (Fl < Fr)

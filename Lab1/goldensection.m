@@ -11,8 +11,14 @@ function [X,N] = goldensection(F, a, b, tol)
         ml = (1-phi)*(X(idx,2)-X(idx,1)) + X(idx,1);
         mr = phi * (X(idx,2)-X(idx,1)) + X(idx,1);
 
-        Fl = F(ml);
-        Fr = F(mr);
+        Fl = F(ml); % FIXME:  N++ here.
+        Fr = F(mr); % FIXME:  N++ here.
+
+                    % TODO: Save previous function values to avoid
+                    % unnecessary calculations.
+        
+ 
+    
 
         idx = idx + 1;
         if (Fl < Fr)
@@ -21,5 +27,5 @@ function [X,N] = goldensection(F, a, b, tol)
             X(idx, :) = [ml, X(idx-1,2), abs(X(idx-1,2) - ml)]; 
         end
     end
-    N = idx;
+    N = 2*idx;
 end

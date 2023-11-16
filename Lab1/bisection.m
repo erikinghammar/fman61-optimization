@@ -7,7 +7,7 @@ function [X,N] = bisection(F, a, b, tol)
     syms x;
     df = diff(F(x),x);
 
-    while (X(end,3) / X(1,3) >= tol)
+    while (X(end,3) / X(1,3) > tol)
         % ml = (X(idx,1) + X(idx,2))/2 - delta;
         % mr = ml + 2*delta;
         m = (X(idx,1) + X(idx,2))/2;
@@ -24,5 +24,5 @@ function [X,N] = bisection(F, a, b, tol)
             X(idx,:) = [m, X(idx-1,2), X(idx-1,2) - m];
         end
     end
-    N = (idx-1);
+    N = (idx);
 end
