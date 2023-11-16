@@ -1,0 +1,19 @@
+A penalty function is a way to reduce the complexity of computing the
+solutions to an optimization problem by converting a bounded problem to
+an unbounded problem where we penalize input values which are outside
+our region of interest.
+
+Common functions include the using the a maximum of function values, the
+absolute values of inputs, or squares of these.
+
+We add the penalty function multiplied by a parameter mu to the function
+we are optimizing over. 
+
+\(
+        \phi = f(\vec(x)) + \mu \rho(\vec(x))
+\)
+
+Solving the problem then is the result of searching over increasingly
+larger values of \mu. This will penalise more points harsher and
+eventually result in the finding of a minimum  which solve the
+optimization problem.
