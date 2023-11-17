@@ -12,6 +12,7 @@ classdef Lab2 < matlab.apps.AppBase
         TheoryLabel            matlab.ui.control.Label
         FValue                 matlab.ui.control.TextArea
         FValueLabel            matlab.ui.control.Label
+        XValueLabel            matlab.ui.control.Label
         BarrierPanel           matlab.ui.container.Panel
         BarrierGrid            matlab.ui.container.GridLayout
         EpsilonButton          matlab.ui.control.Button
@@ -63,6 +64,9 @@ classdef Lab2 < matlab.apps.AppBase
 
         mu = 1
         epsilon = 1
+
+        d2String = '$\\mathbf{x}_k = (%.2f\\,%.2f)^T$';
+        d3String = '$\\mathbf{x}_k = (%.2f\\,%.2f\\,%.2f)^T$';
 
         almostInf = 1e200;
         
@@ -186,7 +190,7 @@ classdef Lab2 < matlab.apps.AppBase
                     uiwait(errordlg(sprintf('Please choose file with name %s',funcname)));
                     [filename,pathname] = uigetfile(funcname,'Pick a MATLAB code file');
                 else
-                    if ~strcmp([pwd '\'],pathname)
+                    if ~strcmp([pwd '\'],pathname) && ~strcmp([pwd '/'],pathname) 
                         fullname = [pathname filename];
                         copyfile(fullname,funcname)
                     end
@@ -204,10 +208,12 @@ classdef Lab2 < matlab.apps.AppBase
                     'XData',[app.IterLine.XData, app.X(1)],...
                     'YData',[app.IterLine.YData, app.X(2)],...
                     'ZData',[app.IterLine.ZData, app.X(3)]);
+                app.XValueLabel.Text = sprintf(app.d3String,app.X(1),app.X(2),app.X(3));
             else
                 set(app.IterLine,...
                     'XData',[app.IterLine.XData, app.X(1)],...
                     'YData',[app.IterLine.YData, app.X(2)]);
+                app.XValueLabel.Text = sprintf(app.d2String,app.X(1),app.X(2));
             end
             app.NumIter = app.NumIter + 1;
         end
@@ -289,8 +295,10 @@ classdef Lab2 < matlab.apps.AppBase
             app.PenaltyIterations.Text = "No. Iterations: 0";
             app.BarrierIterations.Text = "No. Iterations: 0";
             app.X = Inf;
+            app.XValueLabel.Text = '';
             if app.DropDown.Value == "Problem 3"
                 app.X = [app.x_0.Value;app.y_0.Value;app.z_0.Value];
+                app.XValueLabel.Text = sprintf(app.d3String,app.x_0.Value,app.y_0.Value,app.z_0.Value);
                 app.IterLine = plot3(app.UIAxes,app.X(1),app.X(2),app.X(3),'r.--','MarkerSize',12,'HitTest','off');
                 app.FValue.Value = num2str(app.c'*app.X);
             end
@@ -319,7 +327,8 @@ classdef Lab2 < matlab.apps.AppBase
                     else
                         PenaltyStep(app)
                     end
-                end                
+                end
+                app.XValueLabel.Text = sprintf(app.d2String,app.X(1),app.X(2));
                 app.FValue.Value = num2str(app.c'*app.X);
             end
         end
@@ -453,6 +462,7 @@ classdef Lab2 < matlab.apps.AppBase
             else
                 PenaltyStep(app)
             end
+            app.XValueLabel.Text = sprintf(app.d3String,app.X(1),app.X(2),app.X(3));
         end
 
         % Value changed function: Mu
@@ -537,13 +547,13 @@ classdef Lab2 < matlab.apps.AppBase
 
             % Create LeftGrid
             app.LeftGrid = uigridlayout(app.LeftPanel);
-            app.LeftGrid.RowHeight = {'2x', '2x', '2x', '2x', '1x', 20, 20, 25, 25};
+            app.LeftGrid.RowHeight = {'2x', '2x', '2x', '2x', '1x', 20, 20, 25, 25, 25};
 
             % Create DropDown
             app.DropDown = uidropdown(app.LeftGrid);
             app.DropDown.Items = {'Problem 1', 'Problem 2', 'Problem 3'};
             app.DropDown.ValueChangedFcn = createCallbackFcn(app, @DropDownValueChanged, true);
-            app.DropDown.Layout.Row = 8;
+            app.DropDown.Layout.Row = 9;
             app.DropDown.Layout.Column = [1 2];
             app.DropDown.Value = 'Problem 1';
 
@@ -650,6 +660,15 @@ classdef Lab2 < matlab.apps.AppBase
             app.EpsilonButton.Layout.Column = [3 4];
             app.EpsilonButton.Text = 'Iterate';
 
+            % Create XValueLabel
+            app.XValueLabel = uilabel(app.LeftGrid);
+            app.XValueLabel.Interpreter = 'latex';
+            app.XValueLabel.HorizontalAlignment = 'center';
+            app.XValueLabel.FontSize = 14;
+            app.XValueLabel.Layout.Row = 8;
+            app.XValueLabel.Layout.Column = [1 2];
+            app.XValueLabel.Text = '';
+
             % Create FValueLabel
             app.FValueLabel = uilabel(app.LeftGrid);
             app.FValueLabel.Interpreter = 'latex';
@@ -678,14 +697,14 @@ classdef Lab2 < matlab.apps.AppBase
             % Create LoadbarriermButton
             app.LoadbarriermButton = uibutton(app.LeftGrid, 'push');
             app.LoadbarriermButton.ButtonPushedFcn = createCallbackFcn(app, @LoadBarrierButtonPushed, true);
-            app.LoadbarriermButton.Layout.Row = 9;
+            app.LoadbarriermButton.Layout.Row = 10;
             app.LoadbarriermButton.Layout.Column = 1;
             app.LoadbarriermButton.Text = 'Load barrier.m';
 
             % Create LoadpenaltymButton
             app.LoadpenaltymButton = uibutton(app.LeftGrid, 'push');
             app.LoadpenaltymButton.ButtonPushedFcn = createCallbackFcn(app, @LoadPenaltyButtonPushed, true);
-            app.LoadpenaltymButton.Layout.Row = 9;
+            app.LoadpenaltymButton.Layout.Row = 10;
             app.LoadpenaltymButton.Layout.Column = 2;
             app.LoadpenaltymButton.Text = 'Load penalty.m';
 
