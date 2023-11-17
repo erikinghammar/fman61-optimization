@@ -2,14 +2,20 @@ clear; clc; close all
 
 %% INPUT DATA
 % feasible region from Problem 1
-A =  [-1, -1;1, -1;1, 2;-1, 0];
+
+A =  [-1, -2;1, -2;1, 2;-1, 0];
 b = [-2;0;6;0];
+% A = [-1 0;
+%     0 -1;
+%     0 1;
+%     1 0] + 4;
+% b = [1 -1 1 -1]';
 
 % for compatibility, function must be written with two input arguments
 % as opposed to f = @(x) x(1) + x(2) ...
-f = @(x,y) x.^2 + y.^2;
+f = @(x,y) x.^2 + 2*y.^2;
 
-x0 = [0;0]; % initial point
+x0 = [1;1]; % initial point
 
 % plot feasible region + level curves
 feasibleRegion(A,b,f);
