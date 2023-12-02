@@ -1,4 +1,4 @@
-function nabla_f = num_gradient(f, x0, varargin)
+function gradient = num_gradient(func, x, varargin)
 %NUM_DIFF Calculate the gradient of a function 
 %   Returns the gradient of a function calculated using the central
 %   difference formula for each direction of the vector.
@@ -14,6 +14,7 @@ function nabla_f = num_gradient(f, x0, varargin)
 %   Outputs:
 %       nabla_f     the gradient of f at the point x.               (Rn)
 h = 1e-6;
+n = numel(x);
 if ~isempty(varargin)
     for i=1:2:numel(varargin)
         if strcmp(varargin{i},'h')
@@ -22,18 +23,20 @@ if ~isempty(varargin)
     end
 end
 
-nabla_f = zeros(size(x0));
-n = numel(x0);
-for i=1:n
-    % for each direction we need to reset x_plus/minus_h to x and only step
-    % in the considered direction.
-    x_plus_h = x0;
-    x_minus_h = x0;
-    x_plus_h(i) = x0(i) + h;
-    x_minus_h(i) = x0(i) + h;
-
-    % central difference
-    nabla_f(i) = 0.5*(f(x_plus_h)-f(x_minus_h))/h; 
+% Initialize gradient vector
+    gradient = zeros(size(x));
+    
+    % Calculate partial derivatives using finite differences
+    for i = 1:n
+        x_plus_h = x;
+        x_minus_h = x;
+        x_plus_h(i) = x_plus_h(i) + h;
+        x_minus_h(i) = x_minus_h(i) - h;
+        
+        % Calculate the partial derivative with respect to the i-th variable
+        partial_derivative = (func(x_plus_h) - func(x_minus_h)) / h * 0.5;
+        
+        % Update the gradient vector
+        gradient(i) = partial_derivative;
+    end
 end
-end
-
