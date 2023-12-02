@@ -2,6 +2,9 @@ function gradient = num_gradient(func, x, varargin)
 %NUM_DIFF Calculate the gradient of a function 
 %   Returns the gradient of a function calculated using the central
 %   difference formula for each direction of the vector.
+%
+%   NOTE: x must be strictly Rn, if x is a matrix this calculator will not
+%   work properly.
 %   
 %   nabla_f = num_gradient(f, x0, ['h', H_VALUE])
 %
@@ -13,6 +16,7 @@ function gradient = num_gradient(func, x, varargin)
 %
 %   Outputs:
 %       nabla_f     the gradient of f at the point x.               (Rn)
+
 h = 1e-6;
 n = numel(x);
 if ~isempty(varargin)
@@ -22,6 +26,9 @@ if ~isempty(varargin)
         end
     end
 end
+
+% TODO: Make this function take in a matrix and perform column-by-column
+% gradients.
 
 % Initialize gradient vector
     gradient = zeros(size(x));
