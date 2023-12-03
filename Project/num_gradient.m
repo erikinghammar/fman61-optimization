@@ -15,20 +15,23 @@ function gradient = num_gradient(func, x, varargin)
 %                       central difference method. Default h = 1e-6.
 %
 %   Outputs:
-%       nabla_f     the gradient of f at the point x.               (Rn)
+%       gradient    the gradient of f at the point x.               (Rn)
 
-h = 1e-6;
+% TODO: Add logic to adjust h based on the function values of f. If f->0, h
+% should become even smaller.
+
+% TODO: Make this function take in a matrix and perform column-by-column
+% gradients.
+
+h = 1e-8;
 n = numel(x);
 if ~isempty(varargin)
     for i=1:2:numel(varargin)
         if strcmp(varargin{i},'h')
-            h = varargin{i+1}
+            h = varargin{i+1};
         end
     end
 end
-
-% TODO: Make this function take in a matrix and perform column-by-column
-% gradients.
 
 % Initialize gradient vector
     gradient = zeros(size(x));
