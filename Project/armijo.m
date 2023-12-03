@@ -31,17 +31,14 @@ lambda = 1e-2;
 
 % Check for input arguments
 if ~isempty(varargin) 
-    for i = 1:2:numel(varargin)
-        variable = varargin{i};
-        value = varargin{i+1};
-
-        switch variable
+    for i = 1:2:numel(varargin)      
+        switch varargin{i}
             case 'alpha'
-                alpha = value;
+                alpha = varargin{i+1};
             case 'epsilon'
-                epsilon = value;
+                epsilon = varargin{i+1};
             case 'lambda'
-                lambda = value;
+                lambda = varargin{i+1};
             otherwise
                 error(['invalid input:', variable])
         end

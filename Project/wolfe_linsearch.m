@@ -23,32 +23,33 @@ function [lambda] = wolfe_linsearch(func, x, d, varargin)
 %       'lambda',l  Optional, can be used to guess an initial
 %                       lambda value.
 %       'epsilon',e Optional, used to specify the tolerance of the search.
-%                       Default is 0.2. 0 < epsilon <= sigma < 1.
+%                       Default is 0.1. 0 < epsilon <= sigma < 1.
 %       'sigma',s   Optional, used to specify sigma, the tolerance. Default
-%                       is 0.9. 0 < epsilon <= sigma < 1.
+%                       is 0.2.
+% 0 < epsilon <= sigma < 1.
 %       'alpha',a   Optional, specify alpha, the update factor. alpha > 1.
 %                       Default is 2.
 
 % TODO: Update default values once the method works.
-epsilon = 0.2;
-sigma = 0.9;
-alpha = 2;
+epsilon = 0.1;
+sigma = 0.2;
+alpha = 5;
 
 % Unpack the optional values.
 if ~isempty(varargin) 
     for i = 1:2:numel(varargin)
-        variable = varargin{i};
-        value = varargin{i+1};
-
-        switch variable
+        switch varargin{i}
             case 'alpha'
-                alpha = value;
+                if (varargin{i+1} <= 1)
+                    error('alpha must be larger than 1');
+                end
+                alpha = varargin{i+1};
             case 'epsilon'
-                epsilon = value;
+                epsilon = varargin{i+1};
             case 'lambda'
-                lambda = value;
+                lambda = varargin{i+1};
             case 'sigma'
-                sigma = value;
+                sigma = varargin{i+1};
         end
     end
     clear variable value;
