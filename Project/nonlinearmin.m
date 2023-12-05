@@ -1,4 +1,4 @@
-function [x, N_eval, N_iter, normg] = nonlinearmin(f, x0, method, tol, restart, printout)
+function [x_opt, N_eval, N_iter, normg] = nonlinearmin(f, x0, method, tol, restart, printout)
 % NONLINEARMIN minimizes a given function using DFP or BFGS quasi-Newton algorithms.
 %
 %   [x, N_eval, N_iter, normg] = nonlinearmin(f, x0, method, tol, restart, printout)
@@ -24,17 +24,16 @@ function [x, N_eval, N_iter, normg] = nonlinearmin(f, x0, method, tol, restart, 
 %
 % NOTE:
 %   The function f should be defined as a MATLAB function or anonymous function.
+x_opt=x0; N_eval=0; N_iter=0;
 
 switch lower(method)
     case 'dfp'
-        disp('step')
+        % write code to perform dfp algorithm
+        [x_opt, N_eval, N_iter] = dfp(f, x0, tol, restart, printout);
     case 'bfgs' % not implemented yet
+        % write code to perform a bfgs-algorithm
     otherwise
         error("non-implemented method: %s. only 'dfp' and 'bfgs' are implemented", method)
 end
-
-x = 0;
-N_eval = 1;
-N_iter=1;
-normg=1;
+normg=num_gradient(f,x_opt);
 end
