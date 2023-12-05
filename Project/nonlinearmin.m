@@ -6,7 +6,7 @@ function [x, N_eval, N_iter, normg] = nonlinearmin(f, x0, method, tol, restart, 
 % INPUTS:
 %   f         - Function handle for the objective function to be minimized.
 %   x0        - Initial point chosen by the user.
-%   method    - String specifying the method: 'DFP' or 'BFGS'.
+%   method    - String specifying the method: 'dfp' or 'bfgs'.
 %   tol       - User-defined tolerance for termination.
 %   restart   - Flag indicating whether to use restart (1 for yes, 0 for no).
 %   printout  - Flag indicating whether to display intermediate results (1 for yes, 0 for no).
@@ -24,6 +24,14 @@ function [x, N_eval, N_iter, normg] = nonlinearmin(f, x0, method, tol, restart, 
 %
 % NOTE:
 %   The function f should be defined as a MATLAB function or anonymous function.
+
+switch lower(method)
+    case 'dfp'
+        disp('step')
+    case 'bfgs' % not implemented yet
+    otherwise
+        error("non-implemented method: %s. only 'dfp' and 'bfgs' are implemented", method)
+end
 
 x = 0;
 N_eval = 1;
