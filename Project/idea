@@ -1,0 +1,4 @@
+My idea is to have a function that is called by the different method
+solvers everyiteration that can be used when the restart flag is used.
+
+This should have the format of the printout in the lab instructions.
