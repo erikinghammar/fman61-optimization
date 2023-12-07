@@ -83,6 +83,9 @@ if abs(F_prim_lambda) > -sigma * F_prim_0
         end
         lambda = (a+b)/2;
         F_prim_lambda = num_gradient(F,lambda);
+        % felsökning
+        % abs(F_prim_lambda) > - sigma * F_prim_0
+        % 1+1;
     end
 end
 end

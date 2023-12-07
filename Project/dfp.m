@@ -5,8 +5,8 @@ function [x_opt, N_eval, N_iter] = dfp(objective_func,x0, tol, restart, printout
 %   TODO: implement restarting condition.
 
 % varför detta?
-% MAX_ITER = length(x0); % maximum number of iterations
-MAX_ITER = 10; % tillfälligt
+% MAX_ITER = length(x0)+2; % maximum number of iterations
+MAX_ITER = 20; % tillfälligt
 
 % D_k = eye(length(x0)); % initial value for the Hessian matrix
 % Kasper: ändrat zeros nedan till eye, annars blir det ingen uppdatering
@@ -14,17 +14,17 @@ MAX_ITER = 10; % tillfälligt
 D_k_plus = eye(length(x0));
 x_opt = x0; % current best guess for optimizer.
 N_iter = 0; % number of iterations
-
-grad_k = num_gradient(objective_func,x_opt);
+grad_k_plus = num_gradient(objective_func,x_opt);
 
 if printout
     % borde inte evaluera funktionen här
     N_eval = 0;
     lambda_k = 0;
-    print_out(1, N_iter, x_opt, objective_func(x_opt), norm(grad_k), N_eval, lambda_k)
+    print_out(1, N_iter, x_opt, objective_func(x_opt), norm(grad_k_plus), N_eval, lambda_k)
 end
 
-while norm(grad_k) > tol && N_iter < MAX_ITER
+while norm(grad_k_plus) > tol && N_iter < MAX_ITER
+    grad_k = grad_k_plus;
     D_k = D_k_plus;
     
     % Search direction
@@ -40,15 +40,13 @@ while norm(grad_k) > tol && N_iter < MAX_ITER
     grad_k_plus = num_gradient(objective_func, x_opt);
     
     % p,q
-    % BÅDA BLIR = => NaN nedan
     p_k = x_opt - x_old;
     q_k = grad_k_plus - grad_k;
 
     % update Hessian
-    % SKAPAS NaN HÄR
     D_k_plus = D_k + (p_k*(p_k')) / (p_k' * q_k) - ... 
                (D_k*q_k*(q_k')*D_k) / (q_k' * D_k * q_k);
-   
+
     N_iter = N_iter + 1; % we've iterated once again.
 
     if printout
