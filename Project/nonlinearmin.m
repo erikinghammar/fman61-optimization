@@ -36,5 +36,6 @@ switch lower(method)
     otherwise
         error("non-implemented method: %s. only 'dfp' and 'bfgs' are implemented", method)
 end
-normg=num_gradient(f,x_opt);
+normg=norm(num_gradient(f,x_opt));
+disp("Gradient at stopping point: " + string(normg))
 end

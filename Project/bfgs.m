@@ -4,7 +4,8 @@ function[x_opt, N_eval, N_iter] = bfgs(objective_func,x0, tol, restart, printout
 %   TODO: docstring
 
 % setup
-MAX_ITER = length(x0); % maximum number of iterations
+%MAX_ITER = length(x0); % maximum number of iterations
+MAX_ITER = 20; % tillfälligt
 
 % initialization
 N_eval=0;
@@ -12,14 +13,15 @@ N_eval=0;
 D_k_plus = eye(length(x0));
 x_opt = x0; % current best guess for optimizer.
 N_iter = 0; % number of iterations
-grad_k = num_gradient(objective_func, x_opt);
+grad_k_plus = num_gradient(objective_func, x_opt);
 
 if printout
     lambda_k = 0;
-    print_out(1, N_iter, x_opt, objective_func(x_opt), norm(grad_k), N_eval, lambda_k)
+    print_out(1, N_iter, x_opt, objective_func(x_opt), norm(grad_k_plus), N_eval, lambda_k)
 end
 
-while norm(grad_k) > tol && N_iter < MAX_ITER
+while norm(grad_k_plus) > tol && N_iter < MAX_ITER
+    grad_k = grad_k_plus;
     D_k = D_k_plus;
     
     % Search direction
