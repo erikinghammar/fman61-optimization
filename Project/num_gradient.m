@@ -34,19 +34,20 @@ if ~isempty(varargin)
 end
 
 % Initialize gradient vector
-    gradient = zeros(size(x));
-    
-    % Calculate partial derivatives using finite differences
-    for i = 1:n
-        x_plus_h = x;
-        x_minus_h = x;
-        x_plus_h(i) = x_plus_h(i) + h;
-        x_minus_h(i) = x_minus_h(i) - h;
-        
-        % Calculate the partial derivative with respect to the i-th variable
-        partial_derivative = (func(x_plus_h) - func(x_minus_h)) / h * 0.5;
-        
-        % Update the gradient vector
-        gradient(i) = partial_derivative;
-    end
+gradient = zeros(size(x));
+
+% Calculate partial derivatives using finite differences
+for i = 1:n
+    x_plus_h = x;
+    x_minus_h = x;
+    x_plus_h(i) = x_plus_h(i) + h;
+    x_minus_h(i) = x_minus_h(i) - h;
+
+    % Calculate the partial derivative with respect to the i-th variable
+    partial_derivative = (func(x_plus_h) - func(x_minus_h)) / h * 0.5;
+
+    % Update the gradient vector
+    gradient(i) = partial_derivative;
+end
+
 end

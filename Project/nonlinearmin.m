@@ -30,8 +30,9 @@ switch lower(method)
     case 'dfp'
         % write code to perform dfp algorithm
         [x_opt, N_eval, N_iter] = dfp(f, x0, tol, restart, printout);
-    case 'bfgs' % not implemented yet
+    case 'bfgs' % not implemented yet (?)
         % write code to perform a bfgs-algorithm
+        [x_opt, N_eval, N_iter] = bfgs(f, x0, tol, restart, printout);
     otherwise
         error("non-implemented method: %s. only 'dfp' and 'bfgs' are implemented", method)
 end
