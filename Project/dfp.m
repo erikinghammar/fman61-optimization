@@ -11,11 +11,11 @@ freq = 5;
 D_k_plus = eye(length(x0));  % positive definite initialization
 x_opt = x0; % current best guess for optimizer.
 N_iter = 0; % number of iterations
+N_eval = 0;
 grad_k_plus = num_gradient(objective_func,x_opt);
 
 if printout
     % borde inte evaluera funktionen här
-    N_eval = 0;
     lambda_k = 0;
     print_out(1, N_iter, x_opt, objective_func(x_opt), norm(grad_k_plus), N_eval, lambda_k)
 end
@@ -28,13 +28,14 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
     d_k = - D_k * grad_k;
 
     % line search
-    lambda_k = wolfe_linsearch(objective_func, x_opt, d_k);
+    [lambda_k, N_eval] = wolfe_linsearch(objective_func, x_opt, d_k, N_eval);
 
     %
     x_old = x_opt;
     x_opt = x_old + lambda_k*d_k;
 
     grad_k_plus = num_gradient(objective_func, x_opt);
+    N_eval = N_eval +2*numel(x_opt);
 
     % p,q
     p_k = x_opt - x_old;

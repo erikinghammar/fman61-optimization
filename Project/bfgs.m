@@ -28,13 +28,14 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
     d_k = - D_k * grad_k;
 
     % line search
-    lambda_k = wolfe_linsearch(objective_func, x_opt, d_k);
+    [lambda_k, N_eval] = wolfe_linsearch(objective_func, x_opt, d_k, N_eval);
 
     %
     x_old = x_opt;
     x_opt = x_old + lambda_k*d_k;
 
     grad_k_plus = num_gradient(objective_func, x_opt);
+    N_eval = N_eval +2*numel(x_opt);
 
     % p,q
     p_k = x_opt - x_old;
