@@ -19,4 +19,6 @@ printout = 1;
 
 %% Run
 nonlinearmin(f, x0, dfp, tol, restart, printout);
+nonlinearmin2(f, x0, dfp, tol, restart, printout);
 nonlinearmin(f, x0, bfgs, tol, restart, printout);
+nonlinearmin2(f, x0, bfgs, tol, restart, printout);

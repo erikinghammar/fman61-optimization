@@ -84,9 +84,5 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
     end
 end
 
-% TODO: implement proper eval counting
-N_eval = -1; % number of function evaluations.
-% måste räkna inne i line search och num_gradient
-
 end
 
