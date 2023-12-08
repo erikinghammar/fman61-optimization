@@ -23,7 +23,7 @@ function gradient = num_gradient(func, x, varargin)
 % TODO: Make this function take in a matrix and perform column-by-column
 % gradients.
 
-h = 1e-8;
+h = 1e-9;
 n = numel(x);
 if ~isempty(varargin)
     for i=1:2:numel(varargin)

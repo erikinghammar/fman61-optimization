@@ -38,4 +38,5 @@ switch lower(method)
 end
 normg=norm(num_gradient(f,x_opt));
 disp("Gradient at stopping point: " + string(normg))
+disp(" ")
 end

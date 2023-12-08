@@ -9,10 +9,10 @@ dfp = "dfp";
 bfgs = "bfgs";
 
 %% Set inputs
-f = fnconv;
+f = @(x) abs(x(1)) + abs(x(2));
 x0 = [1.1 1.1]';
 % method = bfgs;
-tol = 10^-5;
+tol = 10^-6;
 restart = 0;
 printout = 1;
 
