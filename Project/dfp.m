@@ -1,4 +1,4 @@
-function [x_opt, N_eval, N_iter] = dfp(objective_func,x0, tol, restart, printout)
+function [x_opt, N_eval, N_iter, grad_k_plus] = dfp(objective_func,x0, tol, restart, printout)
 %DFP Summary of this function goes here
 %   Detailed explanation goes here
 %   TODO: write docstring
@@ -16,8 +16,8 @@ grad_k_plus = num_gradient(objective_func,x_opt);
 N_eval = N_eval +2*numel(x_opt);
 
 if printout
-    % borde inte evaluera funktionen här
     lambda_k = 0;
+    N_eval = N_eval +1;
     print_out(1, N_iter, x_opt, objective_func(x_opt), norm(grad_k_plus), N_eval, lambda_k)
 end
 
@@ -29,7 +29,7 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
     d_k = - D_k * grad_k;
 
     % line search
-    [lambda_k, N_eval] = wolfe_linsearch(objective_func, x_opt, d_k, N_eval);
+    [lambda_k, N_eval, fx] = wolfe_linsearch(objective_func, x_opt, d_k, N_eval);
 
     %
     x_old = x_opt;
@@ -46,7 +46,7 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
 
     if printout
         % borde inte evaluera funktionen här
-        print_out(0, N_iter, x_opt, objective_func(x_opt), norm(grad_k), N_eval, lambda_k)
+        print_out(0, N_iter, x_opt, fx, norm(grad_k), N_eval, lambda_k)
     end
 
     if p_k == 0

@@ -1,4 +1,4 @@
-function [lambda, N_eval] = wolfe_linsearch(func, x, d, N_eval, varargin)
+function [lambda, N_eval, F_0] = wolfe_linsearch(func, x, d, N_eval, varargin)
 %WOLF_LINSEARCH Perform a line search to satisfy the Wolfe condition
 %   The Wolfe conditions creates an interval of acceptable points to be
 %   used when performing an inexact line search. They are:
@@ -60,7 +60,7 @@ end
 
 % Compute a new lambda from Armijos method.
 F = @(l) func(x + l*d);
-[N_eval, lambda, F_prim_0] = armijo(func,x,d,N_eval,varargin{:});
+[N_eval, F_0, lambda, F_prim_0] = armijo(func,x,d,N_eval,varargin{:});
 
 F_prim_lambda = num_gradient(F,lambda);
 N_eval = N_eval +2;

@@ -52,6 +52,7 @@ N_eval = N_eval +2*numel(x_opt);
 
 if printout
     lambda_k = 0;
+    N_eval = N_eval +1;
     print_out(1, N_iter, x_opt, f(x_opt), norm(grad_k_plus), N_eval, lambda_k)
 end
 
@@ -72,9 +73,9 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
     %%%
 
     % line search
-    [lambda_k, N_eval] = wolfe_linsearch(f, x_opt, d_k, N_eval);
-
+    [lambda_k, N_eval, fx] = wolfe_linsearch(f, x_opt, d_k, N_eval);
     %
+
     x_old = x_opt;
     x_opt = x_old + lambda_k*d_k;
 
@@ -89,7 +90,7 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
 
     if printout
         % borde inte evaluera funktionen här
-        print_out(0, N_iter, x_opt, f(x_opt), norm(grad_k), N_eval, lambda_k)
+        print_out(0, N_iter, x_opt, fx, norm(grad_k), N_eval, lambda_k)
     end
 
     if p_k == 0
@@ -123,7 +124,11 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
     end
 end
 
-normg = norm(num_gradient(f,x_opt));
+normg = norm(grad_k_plus); 
 disp("Gradient at stopping point: " + string(normg))
 disp(" ")
+end
+
+function N_eval = N_evalplus(N_eval, k)
+    N_eval = N_eval +k;
 end

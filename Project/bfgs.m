@@ -1,16 +1,14 @@
-function[x_opt, N_eval, N_iter] = bfgs(objective_func,x0, tol, restart, printout)
+function[x_opt, N_eval, N_iter, grad_k_plus] = bfgs(objective_func,x0, tol, restart, printout)
 %BFGS Summary of this function goes here
 %   Detailed explanation goes here
 %   TODO: docstring
 
 % setup
-%MAX_ITER = length(x0); % maximum number of iterations
 MAX_ITER = 500;
 freq = 5;
 
 % initialization
 N_eval=0;
-%D_k = eye(length(x0)); % initial value for the Hessian matrix
 D_k_plus = eye(length(x0));
 x_opt = x0; % current best guess for optimizer.
 N_iter = 0; % number of iterations
@@ -19,6 +17,7 @@ N_eval = N_eval +2*numel(x_opt);
 
 if printout
     lambda_k = 0;
+    N_eval = N_eval +1;
     print_out(1, N_iter, x_opt, objective_func(x_opt), norm(grad_k_plus), N_eval, lambda_k)
 end
 
@@ -30,7 +29,7 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
     d_k = - D_k * grad_k;
 
     % line search
-    [lambda_k, N_eval] = wolfe_linsearch(objective_func, x_opt, d_k, N_eval);
+    [lambda_k, N_eval, fx] = wolfe_linsearch(objective_func, x_opt, d_k, N_eval);
 
     %
     x_old = x_opt;
@@ -47,7 +46,7 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
 
     if printout
         % borde inte evaluera funktionen här
-        print_out(0, N_iter, x_opt, objective_func(x_opt), norm(grad_k), N_eval, lambda_k)
+        print_out(0, N_iter, x_opt, fx, norm(grad_k), N_eval, lambda_k)
     end
 
     if p_k == 0

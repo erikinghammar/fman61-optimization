@@ -29,14 +29,14 @@ x_opt=x0; N_eval=0; N_iter=0;
 switch lower(method)
     case 'dfp'
         % write code to perform dfp algorithm
-        [x_opt, N_eval, N_iter] = dfp(f, x0, tol, restart, printout);
+        [x_opt, N_eval, N_iter, grad_k_plus] = dfp(f, x0, tol, restart, printout);
     case 'bfgs' % not implemented yet (?)
         % write code to perform a bfgs-algorithm
-        [x_opt, N_eval, N_iter] = bfgs(f, x0, tol, restart, printout);
+        [x_opt, N_eval, N_iter, grad_k_plus] = bfgs(f, x0, tol, restart, printout);
     otherwise
         error("non-implemented method: %s. only 'dfp' and 'bfgs' are implemented", method)
 end
-normg=norm(num_gradient(f,x_opt));
+normg = norm(grad_k_plus);
 disp("Gradient at stopping point: " + string(normg))
 disp(" ")
 end
