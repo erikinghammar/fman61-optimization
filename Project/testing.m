@@ -11,14 +11,14 @@ bfgs = "bfgs";
 
 %% Set inputs
 f = fsconv;
-x0 = [1.1 1.1]';
+x0 = [100 100]';
 % method = bfgs;
 tol = 10^-6;
 restart = 1;
 printout = 1;
 
 %% Run
-nonlinearmin(f, x0, dfp, tol, restart, printout);
+%nonlinearmin(f, x0, dfp, tol, restart, printout);
 nonlinearmin2(f, x0, dfp, tol, restart, printout);
-nonlinearmin(f, x0, bfgs, tol, restart, printout);
+%nonlinearmin(f, x0, bfgs, tol, restart, printout);
 nonlinearmin2(f, x0, bfgs, tol, restart, printout);

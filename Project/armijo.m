@@ -1,4 +1,4 @@
-function varargout = armijo(f, x, d, varargin)
+function [N_eval, varargout] = armijo(f, x, d, N_eval, varargin)
 %ARMIJO Performs a line search using Armijo's algorithm
 %   
 %   Performs an inexact line search using Armijo's algorithm along the
@@ -50,22 +50,29 @@ F = @(l) f(x + l*d);
 
 % save these to avoid unnecessary function calls.
 F_0 = F(0);
+N_eval = N_eval +1;
 F_prim_0 = num_gradient(F,0);
 
 % Algorithm 3, page 53 in Diehl, S. 'Optimization - A basic course'
+N_eval = N_eval +1;  % this one refers to the first check below
 while F(alpha*lambda) < F_0 + epsilon*F_prim_0*alpha*lambda
     % step forwards
     lambda = alpha * lambda;
+
+    N_eval = N_eval +1;  % this one refes to the next iteration
 end
+N_eval = N_eval +1;  % this one refers to the first check below
 while F(lambda) > F_0 + epsilon*F_prim_0*lambda
     % backtrack
     lambda = lambda/alpha;
+
+    N_eval = N_eval +1;  % this one refes to the next iteration
 end
 
 switch nargout
-    case 1
-        varargout{1} = lambda;
     case 2
+        varargout{1} = lambda;
+    case 3
         varargout{1} = lambda;
         varargout{2} = F_prim_0; % this is used in wolfe_linsearch
 end

@@ -13,6 +13,7 @@ x_opt = x0; % current best guess for optimizer.
 N_iter = 0; % number of iterations
 N_eval = 0;
 grad_k_plus = num_gradient(objective_func,x_opt);
+N_eval = N_eval +2*numel(x_opt);
 
 if printout
     % borde inte evaluera funktionen här

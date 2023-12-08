@@ -15,6 +15,7 @@ D_k_plus = eye(length(x0));
 x_opt = x0; % current best guess for optimizer.
 N_iter = 0; % number of iterations
 grad_k_plus = num_gradient(objective_func, x_opt);
+N_eval = N_eval +2*numel(x_opt);
 
 if printout
     lambda_k = 0;

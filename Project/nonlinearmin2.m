@@ -44,11 +44,11 @@ freq = 5;
 
 % initialization
 N_eval=0;
-%D_k = eye(length(x0)); % initial value for the Hessian matrix
 D_k_plus = eye(length(x0));
 x_opt = x0; % current best guess for optimizer.
 N_iter = 0; % number of iterations
 grad_k_plus = num_gradient(f, x_opt);
+N_eval = N_eval +2*numel(x_opt);
 
 if printout
     lambda_k = 0;
@@ -61,6 +61,15 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
 
     % Search direction
     d_k = - D_k * grad_k;
+
+    %%%
+    F = @(l) f(x_opt + l*d_k);
+    if num_gradient(F, 0) > 0
+        keyboard
+        % hur kan detta hända?
+        % får typ fråga mr lärare
+    end
+    %%%
 
     % line search
     [lambda_k, N_eval] = wolfe_linsearch(f, x_opt, d_k, N_eval);

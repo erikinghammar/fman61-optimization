@@ -60,8 +60,7 @@ end
 
 % Compute a new lambda from Armijos method.
 F = @(l) func(x + l*d);
-[lambda, F_prim_0] = armijo(func,x,d,varargin{:});
-N_eval = N_eval +2;
+[N_eval, lambda, F_prim_0] = armijo(func,x,d,N_eval,varargin{:});
 
 F_prim_lambda = num_gradient(F,lambda);
 N_eval = N_eval +2;
