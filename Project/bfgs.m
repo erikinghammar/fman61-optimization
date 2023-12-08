@@ -5,7 +5,8 @@ function[x_opt, N_eval, N_iter] = bfgs(objective_func,x0, tol, restart, printout
 
 % setup
 %MAX_ITER = length(x0); % maximum number of iterations
-MAX_ITER = 20; % tillfälligt
+MAX_ITER = 500;
+freq = 5;
 
 % initialization
 N_eval=0;
