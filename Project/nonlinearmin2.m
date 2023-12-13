@@ -25,13 +25,18 @@ function [x_opt, N_eval, N_iter, normg] = nonlinearmin(f, x0, method, tol, resta
 % NOTE:
 %   The function f should be defined as a MATLAB function or anonymous function.
 
+% update Hessian. 
 if strcmp(method, 'dfp')
+    % Equation found on p.73 in Diehl, S. 'Optimization - a
+    % basic course'.
     updateD = @(D_k, p_k, q_k) D_k + (p_k*(p_k')) / (p_k' * q_k) - ...
         (D_k*q_k*(q_k')*D_k) / (q_k' * D_k * q_k);
 elseif strcmp(method, 'bfgs')
+    % Equation found on p.76 in Diehl, S. 'Optimization - a
+    % basic course'.
     updateD = @(D_k, p_k, q_k) D_k +                                        ...
         1/(p_k'*q_k)*(                              ...
-        (1 + (q_k'*D_k*q_k)/(p_k' * q_k))       ...
+        (1 + (q_k'*D_k*q_k)/(p_k' * q_k))*p_k*p_k'       ...
         - D_k * q_k * (p_k') - p_k*(q_k')*D_k   ...
         ); % this should be the correct formula.
 else
@@ -110,8 +115,6 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
         disp("Local minimum found")
     end
 
-    % update Hessian. Equation found on p.76 in Diehl, S. 'Optimization - a
-    % basic course'.
     D_k_plus = updateD(D_k, p_k, q_k);
 
     if restart && mod(N_iter, freq) == 0
