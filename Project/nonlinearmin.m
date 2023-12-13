@@ -57,7 +57,7 @@ N_eval = N_eval +2*numel(x_opt);
 if printout
     lambda_k = 0;
     N_eval = N_eval +1;
-    print_out(1, N_iter, x_opt, f(x_opt), norm(grad_k_plus), N_eval, lambda_k)
+    print_out(N_iter, x_opt, f(x_opt), norm(grad_k_plus), N_eval, lambda_k)
 end
 
 while norm(grad_k_plus) > tol && N_iter < MAX_ITER

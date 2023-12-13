@@ -1,4 +1,4 @@
-function print_out(first, N_itr, x_itr, fx, n_grad, ls_fun_evals, lambda)
+function print_out(N_itr, x_itr, fx, n_grad, ls_fun_evals, lambda)
 % PRINT_ITR Print the current iteration level in the form specified in the
 % manual.
 %
@@ -12,7 +12,7 @@ function print_out(first, N_itr, x_itr, fx, n_grad, ls_fun_evals, lambda)
 %   ls_fun_eval : ?
 %   
 
-if first
+if 0 == N_itr
     disp("iteration    x             f(x)         norm(grad)   ls fun evals   lambda")
 end
 
