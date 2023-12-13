@@ -56,37 +56,30 @@ switch lower(method)
 end
 % setup
 MAX_ITER = 500;
-freq = 5;
+freq = length(x0);
 
 % initialization
 N_eval=0;
 D_k_plus = eye(length(x0));
 x_opt = x0; % current best guess for optimizer.
+x_old = x0 -1;  % just initialization
 N_iter = 0; % number of iterations
 grad_k_plus = num_gradient(f, x_opt);
 N_eval = N_eval +2*numel(x_opt);
+tic
 
 if printout
     lambda_k = 0;
     N_eval = N_eval +1;
-    print_out(N_iter, x_opt, f(x_opt), norm(grad_k_plus), N_eval, lambda_k)
+    print_out(N_iter, x_opt, f(x_opt), norm(grad_k_plus), N_eval, lambda_k, toc)
 end
 
-while norm(grad_k_plus) > tol && N_iter < MAX_ITER
+while N_iter < MAX_ITER
     grad_k = grad_k_plus;
     D_k = D_k_plus;
 
     % Search direction
-    d_k = - D_k * grad_k;
-
-    %%%
-    F = @(l) f(x_opt + l*d_k);
-    if num_gradient(F, 0) > 0
-        keyboard
-        % hur kan detta hända?
-        % får typ fråga mr lärare
-    end
-    %%%
+    d_k = - D_k * grad_k;    
 
     % line search
     [lambda_k, N_eval, fx] = wolfe_linsearch(f, x_opt, d_k, N_eval);
@@ -105,10 +98,10 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
     N_iter = N_iter + 1; % we've iterated once again.
 
     if printout
-        % borde inte evaluera funktionen här
-        print_out(0, N_iter, x_opt, fx, norm(grad_k), N_eval, lambda_k)
+        print_out(N_iter, x_opt, fx, norm(grad_k), N_eval, lambda_k, toc)
     end
 
+    % glitchy stops
     if p_k == 0
         disp("Stopped due to no change in x")
         break
@@ -120,10 +113,16 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
         break
     end
 
+    % non-glitchy stops
     if N_iter == MAX_ITER
         disp("Maximum iterations reached")
+        break
     elseif norm(grad_k_plus) <= tol
-        disp("Local minimum found")
+        disp("Local minimum found, gradient less than tolerance")
+        break
+    elseif norm(x_opt-x_old) <= tol
+        disp("Local minimum found, change in x less than tolerance")
+        break
     end
 
     D_k_plus = updateD(D_k, p_k, q_k);
@@ -132,6 +131,7 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
         D_k_plus = eye(length(x0));
     end
 
+    % another sort of glitchy stop
     if sum(D_k_plus == Inf, 'all') > 0
         disp("Stopped due to discontinuity at minimum")
         break
@@ -139,10 +139,11 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
 end
 
 normg = norm(grad_k_plus); 
-disp("Gradient norm at final point x: " + string(normg))
+disp("Final point x: [" + num2str(x_opt') + "]'.")
+disp("Gradient norm at this x: " + string(normg))
 disp(" ")
 end
 
-function N_eval = N_evalplus(N_eval, k)
+function N_eval = evals_add(N_eval, k)
     N_eval = N_eval +k;
 end

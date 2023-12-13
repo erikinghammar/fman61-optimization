@@ -34,6 +34,7 @@ function [lambda, N_eval, F_0] = wolfe_linsearch(func, x, d, N_eval, varargin)
 epsilon = 0.1;
 sigma = 0.2;
 alpha = 5;
+MAX_ITER = 100;
 
 % Unpack the optional values.
 if ~isempty(varargin) 
@@ -60,13 +61,15 @@ end
 
 % Compute a new lambda from Armijos method.
 F = @(l) func(x + l*d);
+
 [N_eval, F_0, lambda, F_prim_0] = armijo(func,x,d,N_eval,varargin{:});
 
 F_prim_lambda = num_gradient(F,lambda);
 N_eval = N_eval +2;
 a = 0;
 if abs(F_prim_lambda) > -sigma * F_prim_0
-    while F_prim_lambda < 0
+    iter = 0;
+    while F_prim_lambda < 0 && iter < MAX_ITER
         a = lambda;
         lambda = alpha * lambda;
         F_prim_lambda = num_gradient(F,lambda);
@@ -74,12 +77,18 @@ if abs(F_prim_lambda) > -sigma * F_prim_0
         if abs(F_prim_lambda) <= -sigma * F_prim_0
             break;
         end
+
+        iter = iter +1;
+        if iter == MAX_ITER
+            disp("Wolfe stopped on maximum number of iterations")
+        end
     end
     b = lambda;
     lambda = (a + b)/2;
     F_prim_lambda = num_gradient(F,lambda);
     N_eval = N_eval +2;
-    while abs(F_prim_lambda) > - sigma * F_prim_0
+    iter = 0;
+    while abs(F_prim_lambda) > - sigma * F_prim_0 && iter < MAX_ITER
         if F_prim_lambda < 0
             a  = lambda;
         else
@@ -88,6 +97,11 @@ if abs(F_prim_lambda) > -sigma * F_prim_0
         lambda = (a+b)/2;
         F_prim_lambda = num_gradient(F,lambda);
         N_eval = N_eval +2;
+
+        iter = iter +1;
+        if iter == MAX_ITER
+            disp("Wolfe stopped on maximum number of iterations")
+        end
     end
 end
 end

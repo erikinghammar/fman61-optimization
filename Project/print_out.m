@@ -1,4 +1,4 @@
-function print_out(N_itr, x_itr, fx, n_grad, ls_fun_evals, lambda)
+function print_out(N_itr, x_itr, fx, n_grad, ls_fun_evals, lambda, time)
 % PRINT_ITR Print the current iteration level in the form specified in the
 % manual.
 %
@@ -13,7 +13,7 @@ function print_out(N_itr, x_itr, fx, n_grad, ls_fun_evals, lambda)
 %   
 
 if 0 == N_itr
-    disp("iteration    x             f(x)         norm(grad)   ls fun evals   lambda")
+    disp("iteration    x             f(x)         norm(grad)   ls fun evals   lambda       runtime")
 end
 
 disp(string(N_itr) + blanks(13 - strlength(string(N_itr))) ...
@@ -21,7 +21,8 @@ disp(string(N_itr) + blanks(13 - strlength(string(N_itr))) ...
     + string(fx) + blanks(13 - strlength(string(fx))) ...
     + string(n_grad) + blanks(13 - strlength(string(n_grad))) ...
     + string(ls_fun_evals) + blanks(15 - strlength(string(ls_fun_evals))) ...
-    + string(lambda))
+    + string(lambda) + blanks(14 - strlength(string(lambda))) ...
+    + string(time))
 for i = 2:length(x_itr)
     disp(blanks(13) + string(x_itr(i))) 
 end

@@ -53,6 +53,27 @@ F_0 = F(0);
 N_eval = N_eval +1;
 F_prim_0 = num_gradient(F,0);
 
+h = 1e-8;
+while F_prim_0 > 0
+    h = h *10;
+    F_prim_0 = num_gradient(F,0,'h',h);
+
+    if h > 1e-3
+        x = -0.1:0.001:0.1;
+        y = zeros(size(x));
+        for i = 1:length(x)
+            y(i) = F(x(i));
+        end
+        figure
+        plot(x, y)
+        title(num_gradient(F, 0))
+
+        keyboard
+
+        error("Bad search direction, D probably close to singular. Try using restarts.")
+    end
+end
+
 % Algorithm 3, page 53 in Diehl, S. 'Optimization - A basic course'
 N_eval = N_eval +1;  % this one refers to the first check below
 while F(alpha*lambda) < F_0 + epsilon*F_prim_0*alpha*lambda
