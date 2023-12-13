@@ -24,19 +24,113 @@ function [x_opt, N_eval, N_iter, normg] = nonlinearmin(f, x0, method, tol, resta
 %
 % NOTE:
 %   The function f should be defined as a MATLAB function or anonymous function.
-x_opt=x0; N_eval=0; N_iter=0;
 
 switch lower(method)
     case 'dfp'
-        % write code to perform dfp algorithm
-        [x_opt, N_eval, N_iter, grad_k_plus] = dfp(f, x0, tol, restart, printout);
-    case 'bfgs' % not implemented yet (?)
-        % write code to perform a bfgs-algorithm
-        [x_opt, N_eval, N_iter, grad_k_plus] = bfgs(f, x0, tol, restart, printout);
+        % Equation found on p.73 in Diehl, S. 'Optimization - a
+        % basic course'.
+        updateD = @(D_k, p_k, q_k) D_k + (p_k*(p_k')) / (p_k' * q_k) - ...
+            (D_k*q_k*(q_k')*D_k) / (q_k' * D_k * q_k);
+    case 'bfgs'
+        % Equation found on p.76 in Diehl, S. 'Optimization - a
+        % basic course'.
+        updateD = @(D_k, p_k, q_k) D_k +                        ...
+            1/(p_k'*q_k)*(                                      ...
+                (1 + (q_k'*D_k*q_k)/(p_k' * q_k))*p_k*p_k'      ...
+                - D_k * q_k * (p_k') - p_k*(q_k')*D_k           ...
+            ); % this should be the correct formula.
     otherwise
         error("non-implemented method: %s. only 'dfp' and 'bfgs' are implemented", method)
 end
-normg = norm(grad_k_plus);
+% setup
+MAX_ITER = 500;
+freq = 5;
+
+% initialization
+N_eval=0;
+D_k_plus = eye(length(x0));
+x_opt = x0; % current best guess for optimizer.
+N_iter = 0; % number of iterations
+grad_k_plus = num_gradient(f, x_opt);
+N_eval = N_eval +2*numel(x_opt);
+
+if printout
+    lambda_k = 0;
+    N_eval = N_eval +1;
+    print_out(1, N_iter, x_opt, f(x_opt), norm(grad_k_plus), N_eval, lambda_k)
+end
+
+while norm(grad_k_plus) > tol && N_iter < MAX_ITER
+    grad_k = grad_k_plus;
+    D_k = D_k_plus;
+
+    % Search direction
+    d_k = - D_k * grad_k;
+
+    %%%
+    F = @(l) f(x_opt + l*d_k);
+    if num_gradient(F, 0) > 0
+        keyboard
+        % hur kan detta hända?
+        % får typ fråga mr lärare
+    end
+    %%%
+
+    % line search
+    [lambda_k, N_eval, fx] = wolfe_linsearch(f, x_opt, d_k, N_eval);
+    %
+
+    x_old = x_opt;
+    x_opt = x_old + lambda_k*d_k;
+
+    grad_k_plus = num_gradient(f, x_opt);
+    N_eval = N_eval +2*numel(x_opt);
+
+    % p,q
+    p_k = x_opt - x_old;
+    q_k = grad_k_plus - grad_k;
+
+    N_iter = N_iter + 1; % we've iterated once again.
+
+    if printout
+        % borde inte evaluera funktionen här
+        print_out(0, N_iter, x_opt, fx, norm(grad_k), N_eval, lambda_k)
+    end
+
+    if p_k == 0
+        disp("Stopped due to no change in x")
+        break
+    elseif q_k == 0
+        disp("Stopped due to no change in gradient")
+        break
+    elseif p_k' * q_k == 0
+        disp("Stopped due to change in gradient orthogonal to change in x")
+        break
+    end
+
+    if N_iter == MAX_ITER
+        disp("Maximum iterations reached")
+    elseif norm(grad_k_plus) <= tol
+        disp("Local minimum found")
+    end
+
+    D_k_plus = updateD(D_k, p_k, q_k);
+
+    if restart && mod(N_iter, freq) == 0
+        D_k_plus = eye(length(x0));
+    end
+
+    if sum(D_k_plus == Inf, 'all') > 0
+        disp("Stopped due to discontinuity at minimum")
+        break
+    end
+end
+
+normg = norm(grad_k_plus); 
 disp("Gradient at stopping point: " + string(normg))
 disp(" ")
+end
+
+function N_eval = N_evalplus(N_eval, k)
+    N_eval = N_eval +k;
 end
