@@ -25,12 +25,23 @@ function [x_opt, N_eval, N_iter, normg] = nonlinearmin(f, x0, method, tol, resta
 % NOTE:
 %   The function f should be defined as a MATLAB function or anonymous function.
 
+disp("Optimizing the function " + func2str(f) + " from the starting point [" ...
+    + num2str(x0') + "]' to the gradient tolerance " + num2str(tol) + ".")
+if restart
+    disp("Restarts are used.")
+else
+    disp("Restarts are not used.")
+end
+if ~printout
+    disp("Printout has been disabled.")
+end
 switch lower(method)
     case 'dfp'
         % Equation found on p.73 in Diehl, S. 'Optimization - a
         % basic course'.
         updateD = @(D_k, p_k, q_k) D_k + (p_k*(p_k')) / (p_k' * q_k) - ...
             (D_k*q_k*(q_k')*D_k) / (q_k' * D_k * q_k);
+        disp("The method applied is DFP.")
     case 'bfgs'
         % Equation found on p.76 in Diehl, S. 'Optimization - a
         % basic course'.
@@ -38,7 +49,8 @@ switch lower(method)
             1/(p_k'*q_k)*(                                      ...
                 (1 + (q_k'*D_k*q_k)/(p_k' * q_k))*p_k*p_k'      ...
                 - D_k * q_k * (p_k') - p_k*(q_k')*D_k           ...
-            ); % this should be the correct formula.
+            );
+        disp("The method applied is BFGS.")
     otherwise
         error("non-implemented method: %s. only 'dfp' and 'bfgs' are implemented", method)
 end
@@ -127,7 +139,7 @@ while norm(grad_k_plus) > tol && N_iter < MAX_ITER
 end
 
 normg = norm(grad_k_plus); 
-disp("Gradient at stopping point: " + string(normg))
+disp("Gradient norm at final point x: " + string(normg))
 disp(" ")
 end
 
