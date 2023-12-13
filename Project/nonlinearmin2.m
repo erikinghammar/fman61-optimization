@@ -25,24 +25,23 @@ function [x_opt, N_eval, N_iter, normg] = nonlinearmin(f, x0, method, tol, resta
 % NOTE:
 %   The function f should be defined as a MATLAB function or anonymous function.
 
-% update Hessian. 
-if strcmp(method, 'dfp')
-    % Equation found on p.73 in Diehl, S. 'Optimization - a
-    % basic course'.
-    updateD = @(D_k, p_k, q_k) D_k + (p_k*(p_k')) / (p_k' * q_k) - ...
-        (D_k*q_k*(q_k')*D_k) / (q_k' * D_k * q_k);
-elseif strcmp(method, 'bfgs')
-    % Equation found on p.76 in Diehl, S. 'Optimization - a
-    % basic course'.
-    updateD = @(D_k, p_k, q_k) D_k +                                        ...
-        1/(p_k'*q_k)*(                              ...
-        (1 + (q_k'*D_k*q_k)/(p_k' * q_k))*p_k*p_k'       ...
-        - D_k * q_k * (p_k') - p_k*(q_k')*D_k   ...
-        ); % this should be the correct formula.
-else
-    error("non-implemented method: %s. only 'dfp' and 'bfgs' are implemented", method)
+switch lower(method)
+    case 'dfp'
+        % Equation found on p.73 in Diehl, S. 'Optimization - a
+        % basic course'.
+        updateD = @(D_k, p_k, q_k) D_k + (p_k*(p_k')) / (p_k' * q_k) - ...
+            (D_k*q_k*(q_k')*D_k) / (q_k' * D_k * q_k);
+    case 'bfgs'
+        % Equation found on p.76 in Diehl, S. 'Optimization - a
+        % basic course'.
+        updateD = @(D_k, p_k, q_k) D_k +                        ...
+            1/(p_k'*q_k)*(                                      ...
+                (1 + (q_k'*D_k*q_k)/(p_k' * q_k))*p_k*p_k'      ...
+                - D_k * q_k * (p_k') - p_k*(q_k')*D_k           ...
+            ); % this should be the correct formula.
+    otherwise
+        error("non-implemented method: %s. only 'dfp' and 'bfgs' are implemented", method)
 end
-
 % setup
 MAX_ITER = 500;
 freq = 5;
