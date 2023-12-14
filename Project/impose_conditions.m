@@ -1,4 +1,4 @@
-function fwcons = imposecons(fwocons, phi, constype, eqcons, ineqcons) 
+function fwcons = impose_conditions(fwocons, phi, constype, eqcons, ineqcons) 
 if strcmp(constype, "penalty")
     consf = @(x) phi*x^2;
 elseif strcmp(constype, "barrier")
